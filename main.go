@@ -3,16 +3,29 @@ package main
 import (
 	"fmt"
 
-	c "github.com/luizgnaguiar/banco/contas"
+	"github.com/luizgnaguiar/banco/clientes"
+	"github.com/luizgnaguiar/banco/contas"
 )
 
+type verificarConta interface {
+	Sacar(valor float64) string
+}
+
 func main() {
-	contaDoLuiz := c.ContaCorrente{Titular: "Luiz", NumeroAgencia: 222, NumeroConta: 11111, Saldo: 200}
-	contaDaMari := c.ContaCorrente{Titular: "Mari", NumeroAgencia: 222, NumeroConta: 11112, Saldo: 1000}
-	status, valor := contaDoLuiz.Depositar(2500)
-	fmt.Println(status, valor)
+
+	clienteLuiz := clientes.Titular{Nome: "Luiz", CPF: "111.111.111.11", Profissao: "Desenvolvedor"}
+	contaDoLuiz := contas.ContaCorrente{Titular: clienteLuiz, NumeroAgencia: 1111, NumeroConta: 11111}
+
+	contaDaMari := contas.ContaCorrente{}
+	contaDaMari.Depositar(1000)
 	contaDaMari.Transferir(500, &contaDoLuiz)
+
+	PagarBoleto(&contaDaMari, 500)
+
 	fmt.Println(contaDoLuiz)
 	fmt.Println(contaDaMari)
 
+}
+func PagarBoleto(conta verificarConta, valorDoBoleto float64) {
+	conta.Sacar(valorDoBoleto)
 }
